@@ -32,28 +32,34 @@ public class AppTest
     ExtentReports reports;
     ExtentTest test;
     Logger logger=Logger.getLogger(AppTest.class);
+
+    
     @BeforeTest
     public void setup() {
         reports = new ExtentReports();
-        ExtentSparkReporter spark = new ExtentSparkReporter(
-                "C:\\Users\\91701\\Desktop\\it sckcet\\softwareTesting-1\\ExtentReports\\exercise1\\report.html");
+        ExtentSparkReporter spark = new ExtentSparkReporter("C:\\Users\\VIDUR KARTHIC\\Desktop\\CC2 SOFTWARE TESTING\\cc2\\report.html");
         reports.attachReporter(spark);
         test = reports.createTest("Demo Result");
         WebDriverManager.chromedriver().setup();
         driver = new ChromeDriver();
-        PropertyConfigurator.configure("C:\\Users\\91701\\Desktop\\cc2softwaretesting\\src\\test\\java\\com\\resources\\log4j.properties");
+        PropertyConfigurator.configure("C:\\Users\\VIDUR KARTHIC\\Desktop\\CC2 SOFTWARE TESTING\\cc2\\src\\test\\java\\com\\resources\\log4j.properties");
     }
+
+    
     @BeforeMethod
-    public void navigateUrl() {
+    public void navigateUrl()throws Exception{
         driver.navigate().to("https://www.barnesandnoble.com/");
+        Thread.sleep(10000);
     }
+
+    
     @Test(priority = 0) 
     public void testCase1() throws IOException, InterruptedException {
         driver.findElement(By.xpath("//*[@id=\"rhf_header_element\"]/nav/div/div[3]/form/div/div[1]/a")).click();
         driver.findElement(By.linkText("Books")).click();
-        FileInputStream fs = new FileInputStream("C:\\Users\\91701\\Downloads\\input for websites.xlsx");
+        FileInputStream fs = new FileInputStream("C:\\Users\\VIDUR KARTHIC\\Desktop\\CC2 SOFTWARE TESTING\\cc2\\Book1.xlsx");
         XSSFWorkbook work = new XSSFWorkbook(fs);
-        XSSFSheet sheet = work.getSheet("Bank login");
+        XSSFSheet sheet = work.getSheet("Sheet1");
         XSSFRow row = sheet.getRow(6);
         String input = row.getCell(0).getStringCellValue();
         driver.findElement(By.xpath("//*[@id=\"rhf_header_element\"]/nav/div/div[3]/form/div/div[2]/div/input[1]")).sendKeys(input);
@@ -67,6 +73,8 @@ public class AppTest
             logger.error("The text doesnot contains Chetan Bhagat");
         }
     }
+
+    
     @Test(priority = 1)
     public void testCase2() throws InterruptedException {
         Actions action = new Actions(driver);
@@ -75,6 +83,8 @@ public class AppTest
         Thread.sleep(2000);
         driver.findElement(By.xpath("//*[@id=\"addToBagForm_2940159543998\"]/input[11]")).click();
     }
+
+    
     @Test(priority = 2)
     public void testCase3() throws InterruptedException, IOException {
         driver.findElement(By.xpath("//*[@id=\"footer\"]/div/dd/div/div/div[1]/div/a[5]")).click();
@@ -82,8 +92,15 @@ public class AppTest
         driver.findElement(By.xpath("//*[@id=\"rewards-modal-link\"]")).click();
         Thread.sleep(2000);
         File screen = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
-        String path = "C:\\Users\\91701\\Desktop\\it sckcet\\softwareTesting-1\\ExtentReports\\exercise1\\calculator.png";
+        String path = "C:\\Users\\VIDUR KARTHIC\\Desktop\\CC2 SOFTWARE TESTING\\cc2\\screenshot.png";
         FileUtils.copyFile(screen, new File(path));
         
+    }
+
+    
+     @AfterTest
+    public void tearDown() {
+        driver.quit();
+        reports.flush();
     }
 }
