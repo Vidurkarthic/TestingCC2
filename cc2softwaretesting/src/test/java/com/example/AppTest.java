@@ -11,9 +11,11 @@ import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.interactions.Actions;
 import org.testng.annotations.BeforeMethod;
@@ -32,34 +34,28 @@ public class AppTest
     ExtentReports reports;
     ExtentTest test;
     Logger logger=Logger.getLogger(AppTest.class);
-
-    
     @BeforeTest
     public void setup() {
         reports = new ExtentReports();
-        ExtentSparkReporter spark = new ExtentSparkReporter("C:\\Users\\VIDUR KARTHIC\\Desktop\\CC2 SOFTWARE TESTING\\cc2\\report.html");
+        ExtentSparkReporter spark = new ExtentSparkReporter(
+                "C:\\Users\\VIDUR KARTHIC\\Desktop\\CC2 SOFTWARE TESTING\\cc2softwaretesting\\report.html");
         reports.attachReporter(spark);
         test = reports.createTest("Demo Result");
         WebDriverManager.chromedriver().setup();
         driver = new ChromeDriver();
-        PropertyConfigurator.configure("C:\\Users\\VIDUR KARTHIC\\Desktop\\CC2 SOFTWARE TESTING\\cc2\\src\\test\\java\\com\\resources\\log4j.properties");
+        PropertyConfigurator.configure("C:\\Users\\VIDUR KARTHIC\\Desktop\\CC2 SOFTWARE TESTING\\cc2softwaretesting\\src\\test\\java\\com\\resources\\log4j.properties");
     }
-
-    
     @BeforeMethod
-    public void navigateUrl()throws Exception{
+    public void navigateUrl() {
         driver.navigate().to("https://www.barnesandnoble.com/");
-        Thread.sleep(10000);
     }
-
-    
     @Test(priority = 0) 
     public void testCase1() throws IOException, InterruptedException {
         driver.findElement(By.xpath("//*[@id=\"rhf_header_element\"]/nav/div/div[3]/form/div/div[1]/a")).click();
         driver.findElement(By.linkText("Books")).click();
-        FileInputStream fs = new FileInputStream("C:\\Users\\VIDUR KARTHIC\\Desktop\\CC2 SOFTWARE TESTING\\cc2\\Book1.xlsx");
+        FileInputStream fs = new FileInputStream("C:\\Users\\VIDUR KARTHIC\\Desktop\\CC2 SOFTWARE TESTING\\cc2softwaretesting\\input for websites.xlsx");
         XSSFWorkbook work = new XSSFWorkbook(fs);
-        XSSFSheet sheet = work.getSheet("Sheet1");
+        XSSFSheet sheet = work.getSheet("Bank login");
         XSSFRow row = sheet.getRow(6);
         String input = row.getCell(0).getStringCellValue();
         driver.findElement(By.xpath("//*[@id=\"rhf_header_element\"]/nav/div/div[3]/form/div/div[2]/div/input[1]")).sendKeys(input);
@@ -73,34 +69,48 @@ public class AppTest
             logger.error("The text doesnot contains Chetan Bhagat");
         }
     }
-
-    
     @Test(priority = 1)
-    public void testCase2() throws InterruptedException {
-        Actions action = new Actions(driver);
-        action.moveToElement(driver.findElement(By.xpath("//*[@id=\"rhfCategoryFlyout_Audiobooks\"]")));
-        driver.findElement(By.xpath("//*[@id=\"navbarSupportedContent\"]/div/ul/li[5]/div/div/div[1]/div/div[2]/div[1]/dd/a[1]")).click();
+    public void testing2() throws Exception {
+        WebDriverManager.chromedriver().setup();
+        WebDriver driver = new ChromeDriver();
+        driver.get("https://www.barnesandnoble.com/");
+        driver.manage().window().maximize();
+        WebElement clickable = driver.findElement(By.xpath("/html/body/div[2]/header/nav/div/div[4]/div/ul/li[5]/a"));
         Thread.sleep(2000);
-        driver.findElement(By.xpath("//*[@id=\"addToBagForm_2940159543998\"]/input[11]")).click();
-    }
 
-    
+        new Actions(driver).clickAndHold(clickable).perform();
+        driver.findElement(By.linkText("Audiobooks Top 100")).click();
+        Thread.sleep(2000);
+        driver.findElement(By.xpath("/html/body/main/div[2]/div[1]/div/div[2]/div/div[2]/section[2]/ol/li[1]/div/div[2]/div[1]/h3/a")).click();
+        Thread.sleep(2000);
+        // driver.findElement(By.xpath("/html/body/main/div[2]/div[2]/section/div[2]/div/div[3]/div[2]/ul/li[2]/div/div/label/span")).click();
+        // Thread.sleep(2000);
+        JavascriptExecutor js10 = (JavascriptExecutor) driver;
+        js10.executeScript("window.scrollBy(0,400)");
+        Thread.sleep(2000);
+        driver.findElement(By.xpath("/html/body/main/div[2]/div[2]/section/div[2]/div/div[3]/div[2]/ul/li[2]/div/div/label/span")).click();
+        Thread.sleep(2000);
+        driver.findElement(By.xpath("/html/body/main/div[2]/div[2]/section/div[2]/div/div[3]/div[2]/div[3]/div[1]/div[1]/form/input[5]")).click();
+        Thread.sleep(2000);
+
+        driver.quit();
+    }
     @Test(priority = 2)
     public void testCase3() throws InterruptedException, IOException {
-        driver.findElement(By.xpath("//*[@id=\"footer\"]/div/dd/div/div/div[1]/div/a[5]")).click();
-        Thread.sleep(2000);
-        driver.findElement(By.xpath("//*[@id=\"rewards-modal-link\"]")).click();
-        Thread.sleep(2000);
-        File screen = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
-        String path = "C:\\Users\\VIDUR KARTHIC\\Desktop\\CC2 SOFTWARE TESTING\\cc2\\screenshot.png";
-        FileUtils.copyFile(screen, new File(path));
-        
-    }
+        driver.manage().window().maximize();
 
-    
-     @AfterTest
-    public void tearDown() {
+        driver.get("https://www.barnesandnoble.com/");
+        Thread.sleep(2000);
+        JavascriptExecutor js = (JavascriptExecutor) driver;
+        // js.executeScript("window.scrollBy(0,2000)");
+        // Thread.sleep(2000);
+        driver.navigate().to("https://www.barnesandnoble.com/membership/");
+        JavascriptExecutor js1 = (JavascriptExecutor) driver;
+        js1.executeScript("window.scrollBy(0,2000)");
+        Thread.sleep(2000);
+        driver.findElement(By.xpath("/html/body/main/section/div[1]/div[2]/div/div/div[2]/div/div[73]/div/div[1]/a")).click();
+        Thread.sleep(2000);
         driver.quit();
-        reports.flush();
+
     }
 }
